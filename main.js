@@ -1,6 +1,7 @@
 // Test
 // alert ("Hello, World!");
 
+// Création des blueprints pour les produits et les éléments du panier
 class Product {
     constructor (ID, Name, Price, Image){
         this.ID = ID;
@@ -17,6 +18,7 @@ class ShoppingCartItem {
         this.liked = false;
     }
 
+// Ajout de méthode pour calculer le prix total de chaque élément du panier
     TotalPrice(){
         return this.Product.Price * this.Quantity;
     }
@@ -25,7 +27,7 @@ class ShoppingCartItem {
         this.liked = !this.liked;
     }
 }
-
+// Cette classe permet de gérer les éléments du panier et comprendra les différentes méthodes pour ajouter, supprimer, modifier la quantité et liker les produits 
 class Cart {
     constructor (){
         this.Items = [];
@@ -41,10 +43,10 @@ class Cart {
 
     UpdateQuantity(ProductID, Change){
     const item = this.Items.find((item) => item.Product.ID === ProductID);
-        if (item) {
-        item.Quantity = Math.max(1, item.Quantity + Change);
+        item ?
+        item.Quantity = Math.max(1, item.Quantity + Change) : null;
         this.DisplayCart();
-        }
+        
     }
 
     RemoveProduct(ProductID){
@@ -59,10 +61,12 @@ class Cart {
         this.DisplayCart();
     }
 
+// La fonction reduce() permet de calculer le prix total du panier
     TotalCartPrice(){
         return this.Items.reduce((total, item) => total + item.TotalPrice(), 0);
     }
 
+// La méthode DisplayCart() permet de créer les éléments du panier et de les afficher dans l'HTML
     DisplayCart() {
 const cartList = document.getElementById("cart-list");
 const cartTotal = document.getElementById("cart-total");
@@ -74,19 +78,20 @@ const cartTotal = document.getElementById("cart-total");
             <h5>${item.Product.Name}</h5>
             <p>Price: $${item.Product.Price}</p>
             <span>Quantity: ${item.Quantity}</span>
+        <div class="card-buttons">
             <button onclick="cart.UpdateQuantity(${item.Product.ID}, 1)">+</button>
             <button onclick="cart.UpdateQuantity(${item.Product.ID}, -1)">-</button>
             <button onclick="cart.RemoveProduct(${item.Product.ID})">🗑️</button>
             <button onclick="cart.ToggleLike(${item.Product.ID})">${item.liked ? "❤️" : "🤍"}</button>
         </div>
+        </div>
     </div>`).join("");
 
-    cartTotal.textContent = `$${this.TotalCartPrice()}`;     
-
+    cartTotal.innerHTML = `$${this.TotalCartPrice()}`;     
     }
 }
 
-
+// Création d'instances de produits à partir de nos classes et ajout de ces produits au panier
 const cart = new Cart();
 const Products = [
     new Product (1, "Jacket", 100,"./assets/jacket.jpg"),
